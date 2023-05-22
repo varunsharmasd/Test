@@ -1,0 +1,56 @@
+$borderColor:#eee;
+$border:1px solid $borderColor;
+$borderSizing: border-box;
+
+
+.wrapper {
+    max-width: 1024px;
+    margin: auto;
+    border: $border;
+    padding: 20px;
+    box-sizing: $borderSizing;
+
+    .header {
+        height: 60px;
+        border-bottom: 1px solid $borderColor;
+        padding: 15px;
+        box-sizing:$borderSizing;
+    }
+
+    .padding {
+        padding: 20px;
+        border: 1px solid $borderColor;
+    }
+    .box{
+        min-height: 60px;
+        width: 100%;
+        border-bottom: 1px solid $borderColor;
+
+    }
+   
+}
+.flex{
+    display:flex;
+    align-items: center;
+    
+
+}
+.inputfield{
+    padding: 10px;
+    width: 100%;
+}
+.width50{
+    width: 50%;
+}
+.buttonstyle{
+    height: 20px;
+    padding: 0 20px;
+    font-size: 14px;
+    background: #fff;
+    color: #000;
+    border:1px solid #000;
+    margin-right: 10px;
+}
+.marginbottom{
+    margin-bottom: 20px;
+}
