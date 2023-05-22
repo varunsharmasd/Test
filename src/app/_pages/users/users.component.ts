@@ -1,8 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Store } from '@ngrx/store';
-import { UsersState } from '../../_state/users/users-store';
-import { Data, UsersActions } from '@app/_state/users/users-store';
+import { Store, select } from '@ngrx/store';
+import { UsersState, selectUserState } from '../../_state/users/users-store';
+import { Data, UsersActions, selectAllUsers } from '@app/_state/users/users-store';
 import { DataService } from '../../_pages/users/data.service';
 import { Observable } from 'rxjs';
 import { FormsModule } from '@angular/forms';
@@ -17,43 +17,43 @@ import { FormsModule } from '@angular/forms';
 export class UsersComponent implements OnInit {
   // @Input()
   // initUsers$!: Observable<Data[]>;
-  public dataLoad$: Data[] = [];
-  updated$:Data[] = []
-  constructor(private api:DataService) { }
+  userList$: Observable<Data[]> 
+  user: Data;
+  
+  constructor(private api: DataService, private store: Store) { 
+    this.userList$ = this.store.pipe(select(selectAllUsers));
+  }
   ngOnInit(): void {
-    this.load();
+    this.store.dispatch(UsersActions.init())
   }
-  load():void {
-    this.api.loadData()
-      .subscribe(res => {
-      this.dataLoad$ = res.users;
-  })
 
-  }
   toggle(o:Data,ev:Event) {
     ev.stopPropagation();
-    console.log(o.show)
-    this.dataLoad$ = this.dataLoad$.map(x => ({ ...x, show: x.id === o.id ? !o.show : x.show }))
+    const finalObject = {
+      ...o,
+      show:true
+    }
+    this.store.dispatch(UsersActions.updateUser({data:finalObject}))
   }
   valueChange(o: Data, ev: any) {
-    this.updated$ = this.dataLoad$.map(x => ({
-      ...x,
-      firstName: x.id === o.id ? ev.target.value : x.firstName,
-      show:false
-    }));
+    ev.stopPropagation();
+    const updatedValue = ev.target.value; 
+    const name = ev.target.name; 
+    this.user = {
+      ...o,
+      [name]: updatedValue,
+    };
+   this.store.dispatch(UsersActions.updateUser({data:this.user}))
     
-  }
-  valueCatChange(o: Data, ev: any) {
-    this.updated$ = this.dataLoad$.map(x => ({
-      ...x,
-      show:false,
-      lastName: x.id === o.id ? ev.target.value : x.lastName
-    }));
   }
 
   save(o: Data, ev: Event) {
-    this.toggle(o, ev);
-    this.dataLoad$ = this.updated$.length === 0 ? this.dataLoad$:this.updated$
+    ev.stopPropagation();
+    const finalObject = {
+      ...o,
+      show:false
+    }
+    this.store.dispatch(UsersActions.updateUser({data:finalObject}))
   }
 
 }

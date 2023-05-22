@@ -1,10 +1,10 @@
-import { EntityAdapter, EntityState, createEntityAdapter } from "@ngrx/entity";
-import { createActionGroup, createFeature, createFeatureSelector, createReducer, emptyProps, on, props } from "@ngrx/store";
+import { EntityAdapter, EntityState, Update, createEntityAdapter } from "@ngrx/entity";
+import { createActionGroup, createFeature, createFeatureSelector, createReducer, createSelector, emptyProps, on, props, select } from '@ngrx/store';
 
 const UsersStoreKey = "users";
 
 export interface Data {
-    id: string;
+    id: number;
     firstName: string;
     lastName: string;
     maidenName: string;
@@ -29,7 +29,7 @@ export const UsersActions = createActionGroup({
     events: {
         Init: emptyProps(),
         'Load Success': props<{ users: Data[] }>(),
-        'Update User': props<{id:string}>()
+        'Update User': props<{data:Data}>()
     }
 });
 export const UsersReducer = createFeature({
@@ -37,8 +37,22 @@ export const UsersReducer = createFeature({
     reducer: createReducer(
         initialState,
         on(UsersActions.loadSuccess, (_, { users }) => usersAdapter.setAll(users, _)),
-        // on(UsersActions.updateUser,(state,{id})=> [...state,])
+        on(UsersActions.updateUser, (state, {  data }) => usersAdapter.updateOne({
+            id: data.id,
+            changes: {
+                ...data,
+                show: data.show
+            }
+        }, state))
+        
         
     )
 });
+export const selectUserState = createFeatureSelector<UsersState>('users');
+
+
+
+export const { selectAll: selectAllUsers } = usersAdapter.getSelectors(selectUserState);
+
+
 

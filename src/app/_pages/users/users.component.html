@@ -2,9 +2,10 @@
     <div class="header">
         <h3>User Managment</h3>
     </div>
+    <!-- {{userList$ | async}} -->
     <div class="padding">
 
-        <div *ngFor="let user of dataLoad$" class="box" >
+        <div *ngFor="let user of userList$ | async " class="box" >
             <div (click)="toggle(user,$event)">
                 <div class="flex ">
                     <i class="fas fa-chevron-down fa-fw"></i>
@@ -18,12 +19,14 @@
                             <input type="text"
                              class="inputfield"
                              [value]="user.firstName"
+                             name="firstName"
                              (change)="valueChange(user,$event)"
                               />
                         </td>
                         <td>
                             <input type="text" class="inputfield"
-                            [value]="user.lastName" (change)="valueCatChange(user,$event)" />
+                            name="lastName"
+                            [value]="user.lastName" (change)="valueChange(user,$event)" />
                         </td>
                     </table>
                     <div class="marginbottom">
